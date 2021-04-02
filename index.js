@@ -31,7 +31,7 @@ app.get(ulr, (req, res) =>{
                 uniqueWords.push(words[i]);
             }
         }
-        res.statusCode(200).send(uniqueWords)
+        res.status(200).send(uniqueWords)
 
     }
     else if(typeof queryString.find !== 'undefined')
@@ -44,22 +44,22 @@ app.get(ulr, (req, res) =>{
                 count++;
             }
         }
-        res.statusCode(200).send(count)
+        res.status(200).send({count: count})
     }
     else
     {
-        res.statusCode(200).send(words)
+        res.status(200).send(words)
     }
 })
 
 app.get(ulr+'/:id', (req, res) =>{
     if(typeof words[req.params.id] !== 'undefined')
     {
-        res.statusCode(200).send(words[req.params.id].word)
+        res.status(200).send(words[req.params.id].word)
     }
     else
     {
-        res.statusCode(403).send("no word found - id was incorrect")
+        res.status(403).send("no word found - id was incorrect")
     }
 })
 
@@ -73,11 +73,11 @@ app.delete(ulr+'/:id', (req, res) =>{
             words[i].id--;
         }
 
-        res.statusCode(200).send("word deleted")
+        res.status(200).send("word deleted")
     }
     else
     {
-        res.statusCode(403).send("no word deleted - id was incorrect")
+        res.status(403).send("no word deleted - id was incorrect")
     }
 })
 
@@ -97,7 +97,7 @@ app.post(ulr, (req, res) =>{
 
     words.push({id: id, word: newWord, unique: unique})
 
-    res.statusCode(201).send(`${newWord} succesfully added`)
+    res.status(201).send(`${newWord} succesfully added`)
 })
 
 app.listen(port, () => console.log(`Listening on port ${port}`))

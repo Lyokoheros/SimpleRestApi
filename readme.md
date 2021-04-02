@@ -11,7 +11,7 @@ Simple REST API example.
 Endpoints: 
 - [GET] my-api/words - return list of words (as objects containing id, 'word' field storing the word bolean field unique(indicating if the word is unique or not))
 - [GET] my-api/words/:id - return word of given id
-- [GET] my-api/words?find=word - returns quantity of given word*
+- [GET] my-api/words?find=word - returns quantity of given word* (as an object with one field: "count")
 - [GET] my-api/words?unique=true - returns list of unique words*
 - [POST] my-api/words - add word specified in request body, it should contain just the word
 - [DELETE] my-api/words/:id - delete word of given id
