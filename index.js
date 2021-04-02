@@ -1,5 +1,8 @@
 const express = require('express');
 const app = express();
+const bodyParser =  require('body-parser');
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 
 const ulr = '/my-api/words';
 const port = process.env.PORT || 3000;
@@ -66,7 +69,35 @@ app.get(ulr+'/:id', (req, res) =>{
 app.delete(ulr+'/:id', (req, res) =>{
     if(typeof words[req.params.id] !== 'undefined')
     {
-        word.splice(req.params.id, 1);
+        var word = words[req.params.id].word;
+        
+
+        //checking if now deleted word becomes unique
+        if(!words[req.params.id].unique)
+        {
+            var count = -1; //word will be deleted 1 time 
+            for(i=0; i<words.length; i++)
+            {
+                if(words[i].word == word)
+                {
+                    count++;
+                }
+            }
+            if(count == 1)
+            {
+                for(i=0; i<words.length; i++)
+                {
+                    if(words[i].word == word)
+                    {
+                        words[i].unique = true;
+                    }
+                }
+            }
+
+        }
+        words.splice(req.params.id, 1);
+
+
         for(i=req.params.id; i<words.length; i++)
         {
             //udpate the remaining id
@@ -83,21 +114,29 @@ app.delete(ulr+'/:id', (req, res) =>{
 
 app.post(ulr, (req, res) =>{
 
-    var newWord = "";
-    var unique = true;
-    var id = words.length;
-    for(i=0; i<words.length; i++)
+    if(typeof req.body.word !== 'undefined') 
     {
-        if(words[i].word == newWord )
+        var newWord = req.body.word;
+        var unique = true;
+        var id = words.length;
+        for(i=0; i<words.length; i++)
         {
-            words[i].unique=false;
-            unique=false;
+            if(words[i].word == newWord )
+            {
+                words[i].unique=false;
+                unique=false;
+            }
         }
+
+        words.push({id: id, word: newWord, unique: unique});
+
+        res.status(201).send(`${newWord} succesfully added`);
+    }
+    else
+    {
+        res.status(400).send(`No proper request body given. Given request body: ${JSON.stringify(req.body)}`);
     }
 
-    words.push({id: id, word: newWord, unique: unique})
-
-    res.status(201).send(`${newWord} succesfully added`)
 })
 
 app.listen(port, () => console.log(`Listening on port ${port}`))
